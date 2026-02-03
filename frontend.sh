@@ -56,6 +56,9 @@ VALIDATE $? "Change the directory"
 unzip /tmp/frontend.zip &>>LOG_FILE
 VALIDATE $? "Unzip the file"
 
+rm -rf /etc/nginx/nginx.conf &>>LOG_FILE
+VALIDATE $? "Removing the nginx conf file"
+
 cp $SCRIPT_DIR/nginx.conf /etc/nginx/nginx.conf &>>LOG_FILE
 VALIDATE $? "Copy the nginx config file"
 

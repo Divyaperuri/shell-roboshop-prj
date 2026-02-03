@@ -56,6 +56,7 @@ VALIDATE $? "Removing the existing code"
 unzip /tmp/payment.zip &>>LOG_FILE
 VALIDATE $? "Unzip the code"
 
+cd /app
 pip3 install -r requirements.txt &>>LOG_FILE
 VALIDATE $? "Install the requirements"
 

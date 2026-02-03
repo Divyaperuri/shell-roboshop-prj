@@ -11,6 +11,7 @@ SCRIPT_NAME=$( echo $0 | cut -d "." -f1)
 LOG_FILE="$LOGS_FOLDER/$SCRIPT_NAME.log" #/var/log/shell-scripting/17-loops.sh
 START_TIME=$(date +%s)
 SCRIPT_DIR=$PWD
+MYSQL_HOST=mysql.devopslearn.shop
 
 mkdir -p $LOGS_FOLDER
 echo "Script started executed at: $(date)" | tee -a $LOG_FILE

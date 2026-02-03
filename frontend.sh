@@ -9,6 +9,7 @@ N="\e[0m"
 LOGS_FOLDER="/var/log/shell-roboshop-prj"
 SCRIPT_NAME=$( echo $0 | cut -d "." -f1)
 SCRIPT_DIR=$PWD
+MONGODB_HOST=mongodb.devopslearn.shop
 LOG_FILE="$LOGS_FOLDER/$SCRIPT_NAME.log" #/var/log/shell-scripting/17-loops.sh
 
 mkdir -p $LOGS_FOLDER
@@ -40,11 +41,11 @@ VALIDATE $? "Installing the Nginx"
 systemctl enable nginx  &>>LOG_FILE
 VALIDATE $? "Enable the Nginx"
 
-systemctl start nginx &>>LOG_FILE
+systemctl start nginx 
 VALIDATE $? "Start the Nginx"
 
 rm -rf /usr/share/nginx/html/* 
-VALIDATE $? "Remove the nginx page content"
+VALIDATE $? "Remove the nginx default page content"
 
 curl -o /tmp/frontend.zip https://roboshop-artifacts.s3.amazonaws.com/frontend-v3.zip &>>LOG_FILE
 VALIDATE $? "Download the code"
@@ -53,7 +54,7 @@ cd /usr/share/nginx/html
 VALIDATE $? "Change the directory"
 
 unzip /tmp/frontend.zip &>>LOG_FILE
-VALIDATE $? "Unzip the file"
+VALIDATE $? "Downloaded and unzipped frontend"
 
 rm -rf /etc/nginx/nginx.conf &>>LOG_FILE
 VALIDATE $? "Removing the nginx conf file"

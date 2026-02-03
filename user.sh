@@ -9,6 +9,7 @@ N="\e[0m"
 LOGS_FOLDER="/var/log/shell-roboshop-prj"
 SCRIPT_NAME=$( echo $0 | cut -d "." -f1)
 SCRIPT_DIR=$PWD
+MONGODB_HOST=mongodb.devopslearn.shop
 LOG_FILE="$LOGS_FOLDER/$SCRIPT_NAME.log" #/var/log/shell-scripting/17-loops.sh
 
 mkdir -p $LOGS_FOLDER
@@ -37,9 +38,9 @@ VALIDATE $? "Enabling the nodejs"
 dnf install nodejs -y &>>LOG_FILE
 VALIDATE $? "Installing the nodejs"
 
-id roboshop
+id roboshop &>>LOG_FILE
 if [ $? -ne 0 ]; then
-    useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop
+    useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop &>>LOG_FILE
     VALIDATE $? "Create the roboshop username"
 else
     echo -e "User already exist..$Y SKIPPING $N"

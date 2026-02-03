@@ -31,7 +31,7 @@ VALIDATE(){ #functions receive the i/p's through args just like shell script arg
 
 ##### Node JS ####
 dnf module disable nodejs -y &>>$LOG_FILE
-VALIDATE $? "disabiling nodejs"
+VALIDATE $? "disabling nodejs"
 
 dnf module enable nodejs:20 -y &>>$LOG_FILE
 VALIDATE $? "enable nodejs"
@@ -39,7 +39,7 @@ VALIDATE $? "enable nodejs"
 dnf install nodejs -y &>>$LOG_FILE
 VALIDATE $? "Installing nodejs"
 
-id roboshop
+id roboshop &>>LOG_FILE
 if [ $? -ne 0 ]; then
     useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop &>>$LOG_FILE
     VALIDATE $? "Creating the system user"
@@ -83,7 +83,7 @@ VALIDATE $? "Copy the Mongo repo"
 dnf install mongodb-mongosh -y &>>$LOG_FILE
 VALIDATE $? "Installing Mongodb server"
 
-INDEX=$(mongosh mongodb.devopslearn.shop --quiet --eval "db.getMongo().getDBName().indexOf('catalogue')")
+INDEX=$(mongosh --host $MONGODB_HOST --quiet --eval "db.getMongo().getDBName().indexOf('catalogue')")
 if [ $INDEX -1e 0 ]; then
     mongosh --host $MONGODB_HOST </app/db/master-data.js &>>$LOG_FILE
     VALIDATE $? "Load the catalogue products"

@@ -55,6 +55,7 @@ VALIDATE $? "Removing the existing code"
 unzip /tmp/shipping.zip &>>LOG_FILE
 VALIDATE $? "Unzip the code"
 
+cd /app
 mvn clean package &>>LOG_FILE
 VALIDATE $? "Clean the package"
 

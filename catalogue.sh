@@ -56,6 +56,9 @@ VALIDATE $? "Downloading the Catalogue application"
 cd /app 
 VALIDATE $? "Change directory to app directory"
 
+rm -rf /app/*
+VALIDATE $? "Removing existing code"
+
 unzip /tmp/catalogue.zip &>>$LOG_FILE
 VALIDATE $? "Unzip the catalogue"
 

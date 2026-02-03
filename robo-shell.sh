@@ -13,7 +13,7 @@ do
 #This script will create the instance and give you private ip
 #aws ec2 run-instances --image-id ami-0220d79f3f480ecf5 --instance-type t3.micro --security-group-ids sg-0707ca13336ec1a61 --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=Myinstance}]' --query 'Instances[0].PrivateIpAddress' --output text
 
-    if [ $instance != "frontend_server" ]; then
+    if [ $instance != "frontend" ]; then
     #Get PrivateIp Address
         IP=$(aws ec2 describe-instances --instance-ids $INSTANCE_ID --query 'Reservations[0].Instances[0].PrivateIpAddress' --output text)
         RECORD_NAME="$instance.$DOMAIN_NAME" #mongodb.devopslearn.shop

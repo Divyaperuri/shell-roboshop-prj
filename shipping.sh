@@ -9,6 +9,7 @@ N="\e[0m"
 LOGS_FOLDER="/var/log/shell-roboshop-prj"
 SCRIPT_NAME=$( echo $0 | cut -d "." -f1)
 SCRIPT_DIR=$PWD
+MYSQL_HOST=mysql.devopslearn.shop
 LOG_FILE="$LOGS_FOLDER/$SCRIPT_NAME.log" #/var/log/shell-scripting/17-loops.sh
 
 mkdir -p $LOGS_FOLDER
@@ -74,4 +75,16 @@ VALIDATE $? "Start the Shipping"
 
 dnf install mysql -y &>>LOG_FILE
 VALIDATE $? "Install MYSQL"
+
+mysql -h $MYSQL_HOST -uroot -pRoboShop@1 -e 'use cities'  &>>LOG_FILE
+if [ $? -ne 0 ]; then
+    mysql -h $MYSQL_HOST -uroot -pRoboShop@1 < /app/db/schema.sql  &>>LOG_FILE
+    mysql -h $MYSQL_HOST -uroot -pRoboShop@1 < /app/db/app-user.sql  &>>LOG_FILE 
+    mysql -h $MYSQL_HOST -uroot -pRoboShop@1 < /app/db/master-data.sql  &>>LOG_FILE
+else
+    echo -e "Shipping data is already loaded... $Y SKIPPING $N"
+fi
+
+systemctl restart shipping  &>>LOG_FILE
+VALIDATE $? "Restart the Shipping"
 

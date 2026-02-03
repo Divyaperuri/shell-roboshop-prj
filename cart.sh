@@ -29,16 +29,16 @@ VALIDATE(){ #functions receive the i/p's through args just like shell script arg
     fi
 }
 
-dnf module disable nodejs -y
+dnf module disable nodejs -y &>>LOG_FILE
 VALIDATE $? "Disabling the nodejs"
 
-dnf module enable nodejs:20 -y
+dnf module enable nodejs:20 -y &>>LOG_FILE
 VALIDATE $? "Enabling the nodejs"
 
-dnf install nodejs -y
+dnf install nodejs -y &>>LOG_FILE
 VALIDATE $? "Installing the nodejs"
 
-id roboshop
+id roboshop &>>LOG_FILE
 if [ $? -ne 0 ]; then
     useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop
     VALIDATE $? "Create the roboshop username"
@@ -46,29 +46,29 @@ else
     echo -e "User already exist..$Y SKIPPING $N"
 fi
 
-mkdir /app 
+mkdir /app &>>LOG_FILE
 VALIDATE $? "Create a Directory"
 
-curl -L -o /tmp/cart.zip https://roboshop-artifacts.s3.amazonaws.com/cart-v3.zip
+curl -L -o /tmp/cart.zip https://roboshop-artifacts.s3.amazonaws.com/cart-v3.zip &>>LOG_FILE
 VALIDATE $? "Download the cart application"
 
-cd /app 
+cd /app &>>LOG_FILE
 VALIDATE $? "Change the directory"
 
-unzip /tmp/cart.zip
+unzip /tmp/cart.zip &>>LOG_FILE
 VALIDATE $? "Unzip the code"
 
-npm install 
+npm install &>>LOG_FILE
 VALIDATE $? "Installing the dependencies"
 
-cp $SCRIPR_DIR/cart.service /etc/systemd/system/cart.service
+cp $SCRIPR_DIR/cart.service /etc/systemd/system/cart.service &>>LOG_FILE
 VALIDATE $? "Copy the service file"
 
-systemctl daemon-reload
+systemctl daemon-reload &>>LOG_FILE
 VALIDATE $? "Reload the daemon"
 
-systemctl enable cart 
+systemctl enable cart &>>LOG_FILE
 VALIDATE $? "Enabling the Cart"
 
-systemctl start cart
+systemctl start cart &>>LOG_FILE
 VALIDATE $? "Start the Cart"

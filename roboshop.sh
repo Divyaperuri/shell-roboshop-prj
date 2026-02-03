@@ -27,23 +27,17 @@ do
     --change-batch '
     {
         "Comment": "Updating record set",
-        "Changes": [
-            {
-            "Action"               : "UPSERT",
-            "ResourceRecordSet"    : {
-                "Name"                : "'$RECORD_NAME'",
-                "Type"               : "A" ,
-                "TTL"                : 1,
-                "ResourceRecords"    : [
-                {
-                    "Value"           : "'$IP'"
-                }
-                ]
-            }
-            }
-        ]
+        "Changes": [{
+        "Action"               : "UPSERT",
+        "ResourceRecordSet"    : {
+            "Name"                : "'$RECORD_NAME'",
+            "Type"               : "A" ,
+            "TTL"                : 1,
+            "ResourceRecords"    : [{
+                "Value"           : "'$IP'"
+             }]
+        }
+        }]
     }
     '
-    echo "record updated for $instance"
-
 done

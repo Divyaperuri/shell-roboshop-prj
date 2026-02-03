@@ -2,8 +2,8 @@
 
 AMI_ID="ami-0220d79f3f480ecf5" #Image id
 SG_ID="sg-0707ca13336ec1a61"    #Security group id
-#HOSTED_ZONE="Z03009212LOQ4VPB2FLS3" #hosted zone id
-#DOMAIN_NAME="devopslearn.shop"  #domain name
+HOSTED_ZONE="Z03009212LOQ4VPB2FLS3" #hosted zone id
+DOMAIN_NAME="devopslearn.shop"  #domain name
 
 for instance in $@
 do
@@ -22,3 +22,24 @@ do
     fi
 
     echo "$instance: $IP"
+
+#Create record in hosted zone
+{
+  "Comment": "Creating a simple A record for devopslearn.shop",
+  "Changes": [
+    {
+      "Action": "UPSERT",
+      "ResourceRecordSet": {
+        "Name": "$RECORD_NAME",
+        "Type": "A",
+        "TTL": 1,
+        "ResourceRecords": [
+          {
+            "Value": "$IP"
+          }
+        ]
+      }
+    }
+  ]
+}
+done

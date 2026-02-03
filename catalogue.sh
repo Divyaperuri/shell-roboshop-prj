@@ -83,8 +83,13 @@ VALIDATE $? "Copy the Mongo repo"
 dnf install mongodb-mongosh -y &>>$LOG_FILE
 VALIDATE $? "Installing Mongodb server"
 
-mongosh --host $MONGODB_HOST </app/db/master-data.js &>>$LOG_FILE
-VALIDATE $? "Load the catalogue products"
+INDEX=$(mongosh mongodb.devopslearn.shop --quiet --eval "db.getMongo().getDBName().indexOf('catalogue')")
+if [ $INDEX -1e 0 ]; then
+    mongosh --host $MONGODB_HOST </app/db/master-data.js &>>$LOG_FILE
+    VALIDATE $? "Load the catalogue products"
+else
+    echo "Products already loaded... $Y SKIPPING $N"
+fi
 
 systemctl restart catalogue
 VALIDATE $? "Restart the catalogue"

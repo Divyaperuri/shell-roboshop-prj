@@ -31,12 +31,12 @@ do
 
     #Create record in hosted zone
     {
-    "Comment": "Creating a simple A record for devopslearn.shop",
+    "Comment": "creating a simple A record for devopslearn.shop",
     "Changes": [
         {
         "Action": "UPSERT",
         "ResourceRecordSet": {
-            "Name": "$RECORD_NAME",
+            "Name": "'$RECORD_NAME'",
             "Type": "A",
             "TTL": 1,
             "ResourceRecords": [

@@ -8,7 +8,7 @@ DOMAIN_NAME="devopslearn.shop"
 for instance in $@ #mongodb redis mysql
 do
     #Instance creation 
-    INSTANCE_ID=$( aws ec2 run-instances \ 
+    INSTANCE_ID=$(aws ec2 run-instances \ 
     --image-id $AMI_ID \  
     --instance-type "t3.micro" \ 
     --security-group-ids $SG_ID \ 
@@ -18,16 +18,16 @@ do
 
     #Get Private ip
     if [ $instance != "frontend" ]; then
-        IP=$( aws ec2 describe-instances \ 
+        IP=$( ws ec2 describe-instances \ 
             --instance-ids $INSTANCE_ID \ 
             --query 'Reservations[0].Instances[0].PrivateIpAddress' \ 
-            --output text )
+            --output text)
             RECORD_NAME="$instance.$DOMAIN_NAME" #mongodb.devopslearn.shop : domain name for mongodb server
     else
-        IP=$( aws ec2 describe-instances \ 
+        IP=$(aws ec2 describe-instances \ 
             --instance-ids $INSTANCE_ID \ 
             --query 'Reservations[0].Instances[0].PublicIpAddress' \ 
-            --output text )
+            --output text)
         RECORD_NAME="$DOMAIN_NAME" #devopslearn.shop : domain name for frontend server
     fi
 

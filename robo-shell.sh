@@ -16,30 +16,37 @@ do
     if [ $instance != "frontend" ]; then
     #Get PrivateIp Address
         IP=$(aws ec2 describe-instances --instance-ids $INSTANCE_ID --query 'Reservations[0].Instances[0].PrivateIpAddress' --output text)
+        RECORD_NAME="$instance.$DOMAIN_NAME" #mongodb.devopslearn.shop
     else
         #Get PublicIp Address
         IP=$(aws ec2 describe-instances --instance-ids $INSTANCE_ID --query 'Reservations[0].Instances[0].PublicIpAddress' --output text)
+        RECORD_NAME="$DOMAIN_NAME" #devopslearn.shop
     fi
 
     echo "$instance: $IP"
 
-#Create record in hosted zone
-{
-  "Comment": "Creating a simple A record for devopslearn.shop",
-  "Changes": [
+    aws route53 change-resource-record-sets \
+    --hosted-zone-id $HOSTED_ZONE \
+    --change-batch '
+
+    #Create record in hosted zone
     {
-      "Action": "UPSERT",
-      "ResourceRecordSet": {
-        "Name": "$RECORD_NAME",
-        "Type": "A",
-        "TTL": 1,
-        "ResourceRecords": [
-          {
-            "Value": "$IP"
-          }
-        ]
-      }
+    "Comment": "Creating a simple A record for devopslearn.shop",
+    "Changes": [
+        {
+        "Action": "UPSERT",
+        "ResourceRecordSet": {
+            "Name": "$RECORD_NAME",
+            "Type": "A",
+            "TTL": 1,
+            "ResourceRecords": [
+            {
+                "Value": "$IP"
+            }
+            ]
+        }
+        }
+    ]
     }
-  ]
-}
+    '
 done

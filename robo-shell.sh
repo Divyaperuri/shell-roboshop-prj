@@ -28,25 +28,23 @@ do
     aws route53 change-resource-record-sets \
     --hosted-zone-id $HOSTED_ZONE \
     --change-batch '
-
-    #Create record in hosted zone
     {
-    "Comment": "creating a simple A record for devopslearn.shop",
-    "Changes": [
-        {
-        "Action": "UPSERT",
-        "ResourceRecordSet": {
-            "Name": "'$RECORD_NAME'",
-            "Type": "A",
-            "TTL": 1,
-            "ResourceRecords": [
+        "Comment": "creating a simple A record for devopslearn.shop",
+        "Changes": [
             {
-                "Value": "$IP"
+            "Action": "UPSERT",
+            "ResourceRecordSet": {
+                "Name": "'$RECORD_NAME'",
+                "Type": "A",
+                "TTL": 1,
+                "ResourceRecords": [
+                {
+                    "Value": "'$IP'"
+                }
+                ]
             }
-            ]
-        }
-        }
-    ]
+            }
+        ]
     }
     '
 done

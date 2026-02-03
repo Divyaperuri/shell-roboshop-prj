@@ -30,19 +30,34 @@ VALIDATE(){ #functions receive the i/p's through args just like shell script arg
 }
 
 dnf module disable nginx -y
+VALIDATE $? "Disabling the nginx"
+
 dnf module enable nginx:1.24 -y
+VALIDATE $? "Enabling the nginx"
+
 dnf install nginx -y
+VALIDATE $? "Installing the Nginx"
 
 systemctl enable nginx 
+VALIDATE $? "Enable the Nginx"
+
 systemctl start nginx 
+VALIDATE $? "Start the Nginx"
 
 rm -rf /usr/share/nginx/html/* 
+VALIDATE $? "Remove the nginx page content"
 
 curl -o /tmp/frontend.zip https://roboshop-artifacts.s3.amazonaws.com/frontend-v3.zip
+VALIDATE $? "Download the code"
 
 cd /usr/share/nginx/html 
+VALIDATE $? "Change the directory"
+
 unzip /tmp/frontend.zip
+VALIDATE $? "Unzip the file"
 
 cp $SCRIPT_DIR/nginx.conf /etc/nginx/nginx.conf
+VALIDATE $? "Copy the config file"
 
 systemctl restart nginx 
+VALIDATE $? "Restart the nginx"

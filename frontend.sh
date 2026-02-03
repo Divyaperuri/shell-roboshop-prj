@@ -29,35 +29,35 @@ VALIDATE(){ #functions receive the i/p's through args just like shell script arg
     fi
 }
 
-dnf module disable nginx -y
+dnf module disable nginx -y &>>LOG_FILE
 VALIDATE $? "Disabling the nginx"
 
-dnf module enable nginx:1.24 -y
+dnf module enable nginx:1.24 -y &>>LOG_FILE
 VALIDATE $? "Enabling the nginx"
 
-dnf install nginx -y
+dnf install nginx -y &>>LOG_FILE
 VALIDATE $? "Installing the Nginx"
 
-systemctl enable nginx 
+systemctl enable nginx  &>>LOG_FILE
 VALIDATE $? "Enable the Nginx"
 
-systemctl start nginx 
+systemctl start nginx &>>LOG_FILE
 VALIDATE $? "Start the Nginx"
 
 rm -rf /usr/share/nginx/html/* 
 VALIDATE $? "Remove the nginx page content"
 
-curl -o /tmp/frontend.zip https://roboshop-artifacts.s3.amazonaws.com/frontend-v3.zip
+curl -o /tmp/frontend.zip https://roboshop-artifacts.s3.amazonaws.com/frontend-v3.zip &>>LOG_FILE
 VALIDATE $? "Download the code"
 
 cd /usr/share/nginx/html 
 VALIDATE $? "Change the directory"
 
-unzip /tmp/frontend.zip
+unzip /tmp/frontend.zip &>>LOG_FILE
 VALIDATE $? "Unzip the file"
 
-cp $SCRIPT_DIR/nginx.conf /etc/nginx/nginx.conf
-VALIDATE $? "Copy the config file"
+cp $SCRIPT_DIR/nginx.conf /etc/nginx/nginx.conf &>>LOG_FILE
+VALIDATE $? "Copy the nginx config file"
 
-systemctl restart nginx 
+systemctl restart nginx &>>LOG_FILE
 VALIDATE $? "Restart the nginx"

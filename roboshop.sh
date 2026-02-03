@@ -5,7 +5,7 @@ SG_ID="sg-0707ca13336ec1a61" #security group
 ZONE_ID="Z03009212LOQ4VPB2FLS3" #Hosted zone id
 DOMAIN_NAME="devopslearn.online"
 
-for instance in $@
+for instance in $@ #mongodb redis mysql
 do
     #Instance creation 
     INSTANCE_ID=$(aws ec2 run-instances --image-id $AMI_ID --instance-type t3.micro --security-group-ids $SG_ID --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=$instance}]" --query 'Instances[0].InstanceId' --output text)
@@ -16,7 +16,7 @@ do
         RECORD_NAME="$instance.$DOMAIN_NAME" #mongodb.devopslearn.online : domain name for mongodb server
     else
         IP=$(aws ec2 describe-instances --instance-ids $INSTANCE_ID --query 'Reservations[0].Instances[0].PublicIpAddress' --output text)
-        RECORD_NAME="$$DOMAIN_NAME" #devopslearn.online : domain name for frontend server
+        RECORD_NAME="$DOMAIN_NAME" #devopslearn.online : domain name for frontend server
     fi
 
     echo "$instance: $IP"

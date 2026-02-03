@@ -8,7 +8,6 @@ N="\e[0m"
 
 LOGS_FOLDER="/var/log/shell-roboshop-prj"
 SCRIPT_NAME=$( echo $0 | cut -d "." -f1)
-MONGODB_HOST=redis.devopslearn.shop
 SCRIPT_DIR=$PWD
 LOG_FILE="$LOGS_FOLDER/$SCRIPT_NAME.log" #/var/log/shell-scripting/17-loops.sh
 
@@ -41,20 +40,23 @@ VALIDATE $? "Installing the nodejs"
 
 id roboshop &>>LOG_FILE
 if [ $? -ne 0 ]; then
-    useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop &>>LOGS_FILE
+    useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop &>>LOG_FILE
     VALIDATE $? "Create the roboshop user"
 else
     echo -e "User already exist..$Y SKIPPING $N"
 fi
 
-mkdir -p /app &>>LOG_FILE
-VALIDATE $? "Create a Directory"
+mkdir -p /app
+VALIDATE $? "Create app Directory"
 
 curl -L -o /tmp/cart.zip https://roboshop-artifacts.s3.amazonaws.com/cart-v3.zip &>>LOG_FILE
 VALIDATE $? "Download the cart application"
 
 cd /app 
-VALIDATE $? "Change the directory"
+VALIDATE $? "Changing to app directory"
+
+rm -rf /app/*
+VALIDATE $? "Removing existing code"
 
 unzip /tmp/cart.zip &>>LOG_FILE
 VALIDATE $? "Unzip the code"

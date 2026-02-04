@@ -52,7 +52,7 @@ systemctl enable catalogue &>>$LOG_FILE
 systemctl start catalogue &>>$LOG_FILE
 
 cp $SCRIPT_DIR/mongo.repo /etc/yum.repos.d/mongo.repo
-dnf install mongodb-mongoshshdg -y &>>$LOG_FILE
+dnf install mongodb-mongosh -y &>>$LOG_FILE
 
 INDEX=$(mongosh --host mongodb.devopslearn.shop --quiet --eval "db.getMongo().getDBName().indexOf('catalogue')")
 if [ $INDEX -1e 0 ]; then

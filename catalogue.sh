@@ -6,83 +6,83 @@ G="\e[32m"
 Y="\e[33m"
 N="\e[0m"
 
-LOGS_FOLDER="/var/log/shell-roboshop-prj"
-SCRIPT_NAME=$( echo $0 | cut -d "." -f1)
-MONGODB_HOST=mongodb.devopslearn.shop
+LOGS_FOLDER="/var/log/shell-roboshop"
+SCRIPT_NAME=$( echo $0 | cut -d "." -f1 )
 SCRIPT_DIR=$PWD
-LOG_FILE="$LOGS_FOLDER/$SCRIPT_NAME.log" #/var/log/shell-scripting/17-loops.sh
+MONGODB_HOST=mongodb.devopslearn.shop
+LOG_FILE="$LOGS_FOLDER/$SCRIPT_NAME.log" # /var/log/shell-script/16-logs.log
 
 mkdir -p $LOGS_FOLDER
 echo "Script started executed at: $(date)" | tee -a $LOG_FILE
 
 if [ $USERID -ne 0 ]; then
-    echo "ERROR:: Please run this script with root privilage"
-    exit 1 #failure is other than 0
-fi 
+    echo "ERROR:: Please run this script with root privelege"
+    exit 1 # failure is other than 0
+fi
 
-VALIDATE(){ #functions receive the i/p's through args just like shell script args
+VALIDATE(){ # functions receive inputs through args just like shell script args
     if [ $1 -ne 0 ]; then
-        echo -e "Installing $2 ... $R FAILURE $N" | tee -a $LOG_FILE
+        echo -e "$2 ... $R FAILURE $N" | tee -a $LOG_FILE
         exit 1
     else
-        echo -e "Installing $2 ... $G SUCCESS $N" | tee -a $LOG_FILE
+        echo -e "$2 ... $G SUCCESS $N" | tee -a $LOG_FILE
     fi
 }
 
-##### Node JS ####
+##### NodeJS ####
 dnf module disable nodejs -y &>>$LOG_FILE
-VALIDATE $? "disabling nodejs"
-dnf module enable nodejs:20 -y &>>$LOG_FILE
-VALIDATE $? "enable nodejs"
+VALIDATE $? "Disabling NodeJS"
+dnf module enable nodejs:20 -y  &>>$LOG_FILE
+VALIDATE $? "Enabling NodeJS 20"
 dnf install nodejs -y &>>$LOG_FILE
-VALIDATE $? "Installing nodejs"
+VALIDATE $? "Installing NodeJS"
 
 id roboshop &>>$LOG_FILE
 if [ $? -ne 0 ]; then
     useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop &>>$LOG_FILE
-    VALIDATE $? "Creating the system user"
-else 
-    echo -e "User already exist..$Y SKIPPING $N"
+    VALIDATE $? "Creating system user"
+else
+    echo -e "User already exist ... $Y SKIPPING $N"
 fi
 
 mkdir -p /app
-VALIDATE $? "Creating the app directory"
+VALIDATE $? "Creating app directory"
 
 curl -o /tmp/catalogue.zip https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip &>>$LOG_FILE
-VALIDATE $? "Downloading the Catalogue application"
+VALIDATE $? "Downloading catalogue application"
 
 cd /app 
-VALIDATE $? "Change directory to app directory"
+VALIDATE $? "Changing to app directory"
 
 rm -rf /app/*
 VALIDATE $? "Removing existing code"
 
 unzip /tmp/catalogue.zip &>>$LOG_FILE
-VALIDATE $? "Unzip the catalogue"
+VALIDATE $? "unzip catalogue"
 
 npm install &>>$LOG_FILE
-VALIDATE $? "Installing the npm for dependencies"
+VALIDATE $? "Install dependencies"
 
 cp $SCRIPT_DIR/catalogue.service /etc/systemd/system/catalogue.service
-VALIDATE $? "Copy the systemctl service file"
+VALIDATE $? "Copy systemctl service"
 
-systemctl daemon-reload 
+systemctl daemon-reload
 systemctl enable catalogue &>>$LOG_FILE
-VALIDATE $? "enable the catalogue"
+VALIDATE $? "Enable catalogue"
 
 cp $SCRIPT_DIR/mongo.repo /etc/yum.repos.d/mongo.repo
-VALIDATE $? "Copy the Mongo repo"
+VALIDATE $? "Copy mongo repo"
 
 dnf install mongodb-mongosh -y &>>$LOG_FILE
-VALIDATE $? "Installing Mongodb server"
+VALIDATE $? "Install MongoDB client"
 
-INDEX=$(mongosh mongodb.devopslearn.shop --quiet --eval "db.getMongo().getDBNames().indexOf('catalogue')")
-if [ $INDEX -1e 0 ]; then
+INDEX=$(mongosh mongodb.devopslearn.sh --quiet --eval "db.getMongo().getDBNames().indexOf('catalogue')")
+if [ $INDEX -le 0 ]; then
     mongosh --host $MONGODB_HOST </app/db/master-data.js &>>$LOG_FILE
-    VALIDATE $? "Load the catalogue products"
+    VALIDATE $? "Load catalogue products"
 else
-    echo -e "Products are already loaded...$Y SKIPPING $N"
+    echo -e "Catalogue products already loaded ... $Y SKIPPING $N"
 fi
 
-systemctl restart catalogue &>>$LOG_FILE
-VALIDATE $? "Restart the catalogue"
+systemctl restart catalogue
+VALIDATE $? "Restarted catalogue"

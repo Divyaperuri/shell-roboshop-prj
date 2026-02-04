@@ -7,7 +7,7 @@ Y="\e[33m"
 N="\e[0m"
 
 LOGS_FOLDER="/var/log/shell-roboshop-prj"
-SCRIPT_NAME=$( echo $0 | cut -d "." -f1)
+SCRIPT_NAME=$( echo $0 | cut -d "." -f1 )
 SCRIPT_DIR=$PWD
 MYSQL_HOST=mysql.devopslearn.shop
 LOG_FILE="$LOGS_FOLDER/$SCRIPT_NAME.log" #/var/log/shell-scripting/17-loops.sh
@@ -40,10 +40,10 @@ else
     echo -e "User already exist..$Y SKIPPING $N"
 fi
 
-mkdir -p /app &>>$LOG_FILE
+mkdir -p /app 
 VALIDATE $? "Create a Directory"
 
-curl -L -o /tmp/shipping.zip https://roboshop-artifacts.s3.amazonaws.com/shipping-v3.zip &>>$LOG_FILE
+curl -o /tmp/shipping.zip https://roboshop-artifacts.s3.amazonaws.com/shipping-v3.zip &>>$LOG_FILE
 VALIDATE $? "Download the shipping application code"
 
 cd /app 
@@ -54,9 +54,6 @@ VALIDATE $? "Removing the existing code"
 
 unzip /tmp/shipping.zip &>>$LOG_FILE
 VALIDATE $? "Unzip the code"
-
-cd /app
-VALIDATE $? "Changing the Directory"
 
 mvn clean package &>>$LOG_FILE
 VALIDATE $? "Clean the package"
@@ -72,9 +69,6 @@ VALIDATE $? "Reload the Daemon"
 
 systemctl enable shipping &>>$LOG_FILE
 VALIDATE $? "Enabling the Shipping"
-
-systemctl start shipping &>>$LOG_FILE
-VALIDATE $? "Start the Shipping"
 
 dnf install mysql -y &>>$LOG_FILE
 VALIDATE $? "Install MYSQL"

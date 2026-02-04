@@ -7,7 +7,7 @@ Y="\e[33m"
 N="\e[0m"
 
 LOGS_FOLDER="/var/log/shell-roboshop-prj"
-SCRIPT_NAME=$( echo $0 | cut -d "." -f1)
+SCRIPT_NAME=$( echo $0 | cut -d "." -f1 )
 SCRIPT_DIR=$PWD
 MYSQL_HOST=mysql.devopslearn.shop
 LOG_FILE="$LOGS_FOLDER/$SCRIPT_NAME.log" #/var/log/shell-scripting/17-loops.sh
@@ -44,7 +44,7 @@ fi
 mkdir -p /app 
 VALIDATE $? "Create the Directory"
 
-curl -L -o /tmp/payment.zip https://roboshop-artifacts.s3.amazonaws.com/payment-v3.zip &>>$LOG_FILE
+curl -o /tmp/payment.zip https://roboshop-artifacts.s3.amazonaws.com/payment-v3.zip &>>$LOG_FILE
 VALIDATE $? "Downloading the payment application code"
 
 cd /app 
@@ -56,7 +56,6 @@ VALIDATE $? "Removing the existing code"
 unzip /tmp/payment.zip &>>$LOG_FILE
 VALIDATE $? "Unzip the code"
 
-cd /app
 pip3 install -r requirements.txt &>>$LOG_FILE
 VALIDATE $? "Install the requirements"
 
@@ -69,5 +68,5 @@ VALIDATE $? "Reload the Daemon"
 systemctl enable payment &>>$LOG_FILE
 VALIDATE $? "Enable the Payment server"
 
-systemctl start payment &>>$LOG_FILE
-VALIDATE $? "Start the Payment server"
+systemctl restart payment &>>$LOG_FILE
+VALIDATE $? "reStart the Payment server"

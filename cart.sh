@@ -10,46 +10,46 @@ LOGS_FOLDER="/var/log/shell-roboshop-prj"
 SCRIPT_NAME=$( echo $0 | cut -d "." -f1 )
 SCRIPT_DIR=$PWD
 MONGODB_HOST=mongodb.devopslearn.shop
-LOG_FILE="$LOGS_FOLDER/$SCRIPT_NAME.log" #/var/log/shell-scripting/17-loops.sh
+LOG_FILE="$LOGS_FOLDER/$SCRIPT_NAME.log" # /var/log/shell-script/16-logs.log
 
 mkdir -p $LOGS_FOLDER
 echo "Script started executed at: $(date)" | tee -a $LOG_FILE
 
 if [ $USERID -ne 0 ]; then
-    echo "ERROR:: Please run this script with root privilage"
-    exit 1 #failure is other than 0
-fi 
+    echo "ERROR:: Please run this script with root privelege"
+    exit 1 # failure is other than 0
+fi
 
-VALIDATE(){ #functions receive the i/p's through args just like shell script args
+VALIDATE(){ # functions receive inputs through args just like shell script args
     if [ $1 -ne 0 ]; then
-        echo -e "Installing $2 ... $R FAILURE $N" | tee -a $LOG_FILE
+        echo -e "$2 ... $R FAILURE $N" | tee -a $LOG_FILE
         exit 1
     else
-        echo -e "Installing $2 ... $G SUCCESS $N" | tee -a $LOG_FILE
+        echo -e "$2 ... $G SUCCESS $N" | tee -a $LOG_FILE
     fi
 }
 
-### NODE JS ####
+##### NodeJS ####
 dnf module disable nodejs -y &>>$LOG_FILE
-VALIDATE $? "Disabling the nodejs"
-dnf module enable nodejs:20 -y &>>$LOG_FILE
-VALIDATE $? "Enabling the nodejs 20"
+VALIDATE $? "Disabling NodeJS"
+dnf module enable nodejs:20 -y  &>>$LOG_FILE
+VALIDATE $? "Enabling NodeJS 20"
 dnf install nodejs -y &>>$LOG_FILE
-VALIDATE $? "Installing the nodejs"
+VALIDATE $? "Installing NodeJS"
 
 id roboshop &>>$LOG_FILE
 if [ $? -ne 0 ]; then
     useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop &>>$LOG_FILE
-    VALIDATE $? "Create the roboshop user"
+    VALIDATE $? "Creating system user"
 else
-    echo -e "User already exist..$Y SKIPPING $N"
+    echo -e "User already exist ... $Y SKIPPING $N"
 fi
 
 mkdir -p /app
-VALIDATE $? "Create app Directory"
+VALIDATE $? "Creating app directory"
 
 curl -o /tmp/cart.zip https://roboshop-artifacts.s3.amazonaws.com/cart-v3.zip &>>$LOG_FILE
-VALIDATE $? "Download the cart application"
+VALIDATE $? "Downloading cart application"
 
 cd /app 
 VALIDATE $? "Changing to app directory"
@@ -58,19 +58,17 @@ rm -rf /app/*
 VALIDATE $? "Removing existing code"
 
 unzip /tmp/cart.zip &>>$LOG_FILE
-VALIDATE $? "Unzip the code"
+VALIDATE $? "unzip cart"
 
 npm install &>>$LOG_FILE
-VALIDATE $? "Installing the dependencies"
+VALIDATE $? "Install dependencies"
 
-cp $SCRIPT_DIR/cart.service /etc/systemd/system/cart.service 
-VALIDATE $? "Copy the service file"
+cp $SCRIPT_DIR/cart.service /etc/systemd/system/cart.service
+VALIDATE $? "Copy systemctl service"
 
-systemctl daemon-reload &>>$LOG_FILE
-VALIDATE $? "Reload the daemon"
-
+systemctl daemon-reload
 systemctl enable cart &>>$LOG_FILE
-VALIDATE $? "Enabling the Cart"
+VALIDATE $? "Enable cart"
 
-systemctl restart cart &>>$LOG_FILE
-VALIDATE $? "reStart the Cart"
+systemctl restart cart
+VALIDATE $? "Restarted cart"

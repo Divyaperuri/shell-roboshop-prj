@@ -29,7 +29,7 @@ VALIDATE(){ #functions receive the i/p's through args just like shell script arg
     fi
 }
 
-cp $SCRIPR_DIR/mongo.repo /etc/yum.repos.d/mongo.repo
+cp $SCRIPT_DIR/mongo.repo /etc/yum.repos.d/mongo.repo
 VALIDATE $? "Copying mongo repo"
 
 dnf install mongodb-org -y &>>$LOG_FILE

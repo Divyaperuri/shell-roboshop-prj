@@ -62,6 +62,9 @@ VALIDATE $? "Removing existing code"
 unzip /tmp/catalogue.zip &>>$LOG_FILE
 VALIDATE $? "Unzip the catalogue"
 
+cd /app 
+VALIDATE $? "Change directory to app directory"
+
 npm install &>>$LOG_FILE
 VALIDATE $? "Installing the npm for dependencies"
 
@@ -83,7 +86,7 @@ VALIDATE $? "Copy the Mongo repo"
 dnf install mongodb-mongosh -y &>>$LOG_FILE
 VALIDATE $? "Installing Mongodb server"
 
-INDEX=$(mongosh --host $MONGODB_HOST --quiet --eval "db.getMongo().getDBNames().indexOf('catalogue')")
+INDEX=$(mongosh $MONGODB_HOST --quiet --eval "db.getMongo().getDBNames().indexOf('catalogue')")
 
 if [ $INDEX -1e 0 ]; then
     mongosh --host $MONGODB_HOST </app/db/master-data.js &>>$LOG_FILE

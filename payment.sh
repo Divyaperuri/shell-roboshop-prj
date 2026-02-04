@@ -30,12 +30,12 @@ VALIDATE(){ #functions receive the i/p's through args just like shell script arg
 }
 
 #### Python ####
-dnf install python3 gcc python3-devel -y &>>LOG_FILE
+dnf install python3 gcc python3-devel -y &>>$LOG_FILE
 VALIDATE $? "Installing the Python3"
 
-id roboshop &>>LOG_FILE
+id roboshop &>>$LOG_FILE
 if [ $? -ne 0 ]; then   
-    useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop &>>LOG_FILE
+    useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop &>>$LOG_FILE
     VALIDATE $? "Create the roboshop username"
 else
     echo -e "User already exist..$Y SKIPPING $N"
@@ -44,30 +44,30 @@ fi
 mkdir -p /app 
 VALIDATE $? "Create the Directory"
 
-curl -L -o /tmp/payment.zip https://roboshop-artifacts.s3.amazonaws.com/payment-v3.zip &>>LOG_FILE
+curl -L -o /tmp/payment.zip https://roboshop-artifacts.s3.amazonaws.com/payment-v3.zip &>>$LOG_FILE
 VALIDATE $? "Downloading the payment application code"
 
 cd /app 
 VALIDATE $? "Change to app directory"
 
-rm -rf /app/* &>>LOG_FILE
+rm -rf /app/* &>>$LOG_FILE
 VALIDATE $? "Removing the existing code"
 
-unzip /tmp/payment.zip &>>LOG_FILE
+unzip /tmp/payment.zip &>>$LOG_FILE
 VALIDATE $? "Unzip the code"
 
 cd /app
-pip3 install -r requirements.txt &>>LOG_FILE
+pip3 install -r requirements.txt &>>$LOG_FILE
 VALIDATE $? "Install the requirements"
 
-cp $SCRIPT_DIR/payment.service /etc/systemd/system/payment.service &>>LOG_FILE
+cp $SCRIPT_DIR/payment.service /etc/systemd/system/payment.service &>>$LOG_FILE
 VALIDATE $? "Copying the systemctl service"
 
-systemctl daemon-reload &>>LOG_FILE
+systemctl daemon-reload &>>$LOG_FILE
 VALIDATE $? "Reload the Daemon"
 
-systemctl enable payment &>>LOG_FILE
+systemctl enable payment &>>$LOG_FILE
 VALIDATE $? "Enable the Payment server"
 
-systemctl start payment &>>LOG_FILE
+systemctl start payment &>>$LOG_FILE
 VALIDATE $? "Start the Payment server"

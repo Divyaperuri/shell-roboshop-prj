@@ -30,18 +30,18 @@ VALIDATE(){ #functions receive the i/p's through args just like shell script arg
 }
 
 ### NODE JS ####
-dnf module disable nodejs -y &>>LOG_FILE
+dnf module disable nodejs -y &>>$LOG_FILE
 VALIDATE $? "Disabling the nodejs"
 
-dnf module enable nodejs:20 -y &>>LOG_FILE
+dnf module enable nodejs:20 -y &>>$LOG_FILE
 VALIDATE $? "Enabling the nodejs 20"
 
-dnf install nodejs -y &>>LOG_FILE
+dnf install nodejs -y &>>$LOG_FILE
 VALIDATE $? "Installing the nodejs"
 
-id roboshop &>>LOG_FILE
+id roboshop &>>$LOG_FILE
 if [ $? -ne 0 ]; then
-    useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop &>>LOG_FILE
+    useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop &>>$LOG_FILE
     VALIDATE $? "Create the roboshop user"
 else
     echo -e "User already exist..$Y SKIPPING $N"
@@ -50,7 +50,7 @@ fi
 mkdir -p /app
 VALIDATE $? "Create app Directory"
 
-curl -L -o /tmp/cart.zip https://roboshop-artifacts.s3.amazonaws.com/cart-v3.zip &>>LOG_FILE
+curl -L -o /tmp/cart.zip https://roboshop-artifacts.s3.amazonaws.com/cart-v3.zip &>>$LOG_FILE
 VALIDATE $? "Download the cart application"
 
 cd /app 
@@ -59,20 +59,20 @@ VALIDATE $? "Changing to app directory"
 rm -rf /app/*
 VALIDATE $? "Removing existing code"
 
-unzip /tmp/cart.zip &>>LOG_FILE
+unzip /tmp/cart.zip &>>$LOG_FILE
 VALIDATE $? "Unzip the code"
 
-npm install &>>LOG_FILE
+npm install &>>$LOG_FILE
 VALIDATE $? "Installing the dependencies"
 
-cp $SCRIPT_DIR/cart.service /etc/systemd/system/cart.service &>>LOG_FILE
+cp $SCRIPT_DIR/cart.service /etc/systemd/system/cart.service &>>$LOG_FILE
 VALIDATE $? "Copy the service file"
 
-systemctl daemon-reload &>>LOG_FILE
+systemctl daemon-reload &>>$LOG_FILE
 VALIDATE $? "Reload the daemon"
 
-systemctl enable cart &>>LOG_FILE
+systemctl enable cart &>>$LOG_FILE
 VALIDATE $? "Enabling the Cart"
 
-systemctl start cart &>>LOG_FILE
+systemctl start cart &>>$LOG_FILE
 VALIDATE $? "Start the Cart"

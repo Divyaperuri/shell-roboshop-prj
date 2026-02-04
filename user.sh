@@ -7,7 +7,7 @@ Y="\e[33m"
 N="\e[0m"
 
 LOGS_FOLDER="/var/log/shell-roboshop-prj"
-SCRIPT_NAME=$( echo $0 | cut -d "." -f1)
+SCRIPT_NAME=$( echo $0 | cut -d "." -f1 )
 SCRIPT_DIR=$PWD
 MONGODB_HOST=mongodb.devopslearn.shop
 LOG_FILE="$LOGS_FOLDER/$SCRIPT_NAME.log" #/var/log/shell-scripting/17-loops.sh
@@ -31,7 +31,6 @@ VALIDATE(){ #functions receive the i/p's through args just like shell script arg
 
 dnf module disable nodejs -y &>>$LOG_FILE
 VALIDATE $? "Disabling the nodejs"
-
 dnf module enable nodejs:20 -y &>>$LOG_FILE
 VALIDATE $? "Enabling the nodejs"
 
@@ -49,7 +48,7 @@ fi
 mkdir -p /app 
 VALIDATE $? "Create a Directory"
 
-curl -L -o /tmp/user.zip https://roboshop-artifacts.s3.amazonaws.com/user-v3.zip &>>$LOG_FILE
+curl -o /tmp/user.zip https://roboshop-artifacts.s3.amazonaws.com/user-v3.zip &>>$LOG_FILE
 VALIDATE $? "Download the user application"
 
 cd /app 

@@ -32,10 +32,8 @@ VALIDATE(){ #functions receive the i/p's through args just like shell script arg
 ##### Node JS ####
 dnf module disable nodejs -y &>>$LOG_FILE
 VALIDATE $? "disabling nodejs"
-
 dnf module enable nodejs:20 -y &>>$LOG_FILE
 VALIDATE $? "enable nodejs"
-
 dnf install nodejs -y &>>$LOG_FILE
 VALIDATE $? "Installing nodejs"
 
@@ -62,9 +60,6 @@ VALIDATE $? "Removing existing code"
 unzip /tmp/catalogue.zip &>>$LOG_FILE
 VALIDATE $? "Unzip the catalogue"
 
-cd /app 
-VALIDATE $? "Change directory to app directory"
-
 npm install &>>$LOG_FILE
 VALIDATE $? "Installing the npm for dependencies"
 
@@ -72,13 +67,8 @@ cp $SCRIPT_DIR/catalogue.service /etc/systemd/system/catalogue.service
 VALIDATE $? "Copy the systemctl service file"
 
 systemctl daemon-reload 
-VALIDATE $? "reload the daemon"
-
 systemctl enable catalogue &>>$LOG_FILE
 VALIDATE $? "enable the catalogue"
-
-systemctl start catalogue &>>$LOG_FILE
-VALIDATE $? "start the catalogue"
 
 cp $SCRIPT_DIR/mongo.repo /etc/yum.repos.d/mongo.repo
 VALIDATE $? "Copy the Mongo repo"
@@ -86,8 +76,7 @@ VALIDATE $? "Copy the Mongo repo"
 dnf install mongodb-mongosh -y &>>$LOG_FILE
 VALIDATE $? "Installing Mongodb server"
 
-INDEX=$(mongosh --host $MONGODB_HOST --quiet --eval "db.getMongo().getDBNames().indexOf('catalogue')")
-
+INDEX=$(mongosh mongodb.devopslearn.shop --quiet --eval "db.getMongo().getDBNames().indexOf('catalogue')")
 if [ $INDEX -1e 0 ]; then
     mongosh --host $MONGODB_HOST </app/db/master-data.js &>>$LOG_FILE
     VALIDATE $? "Load the catalogue products"

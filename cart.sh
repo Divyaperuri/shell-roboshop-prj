@@ -7,7 +7,7 @@ Y="\e[33m"
 N="\e[0m"
 
 LOGS_FOLDER="/var/log/shell-roboshop-prj"
-SCRIPT_NAME=$( echo $0 | cut -d "." -f1)
+SCRIPT_NAME=$( echo $0 | cut -d "." -f1 )
 SCRIPT_DIR=$PWD
 MONGODB_HOST=mongodb.devopslearn.shop
 LOG_FILE="$LOGS_FOLDER/$SCRIPT_NAME.log" #/var/log/shell-scripting/17-loops.sh
@@ -32,10 +32,8 @@ VALIDATE(){ #functions receive the i/p's through args just like shell script arg
 ### NODE JS ####
 dnf module disable nodejs -y &>>$LOG_FILE
 VALIDATE $? "Disabling the nodejs"
-
 dnf module enable nodejs:20 -y &>>$LOG_FILE
 VALIDATE $? "Enabling the nodejs 20"
-
 dnf install nodejs -y &>>$LOG_FILE
 VALIDATE $? "Installing the nodejs"
 
@@ -50,7 +48,7 @@ fi
 mkdir -p /app
 VALIDATE $? "Create app Directory"
 
-curl -L -o /tmp/cart.zip https://roboshop-artifacts.s3.amazonaws.com/cart-v3.zip &>>$LOG_FILE
+curl -o /tmp/cart.zip https://roboshop-artifacts.s3.amazonaws.com/cart-v3.zip &>>$LOG_FILE
 VALIDATE $? "Download the cart application"
 
 cd /app 
@@ -65,7 +63,7 @@ VALIDATE $? "Unzip the code"
 npm install &>>$LOG_FILE
 VALIDATE $? "Installing the dependencies"
 
-cp $SCRIPT_DIR/cart.service /etc/systemd/system/cart.service &>>$LOG_FILE
+cp $SCRIPT_DIR/cart.service /etc/systemd/system/cart.service 
 VALIDATE $? "Copy the service file"
 
 systemctl daemon-reload &>>$LOG_FILE
@@ -74,5 +72,5 @@ VALIDATE $? "Reload the daemon"
 systemctl enable cart &>>$LOG_FILE
 VALIDATE $? "Enabling the Cart"
 
-systemctl start cart &>>$LOG_FILE
-VALIDATE $? "Start the Cart"
+systemctl restart cart &>>$LOG_FILE
+VALIDATE $? "reStart the Cart"

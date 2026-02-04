@@ -29,18 +29,18 @@ VALIDATE(){ #functions receive the i/p's through args just like shell script arg
     fi
 }
 
-dnf module disable nodejs -y &>>LOG_FILE
+dnf module disable nodejs -y &>>$LOG_FILE
 VALIDATE $? "Disabling the nodejs"
 
-dnf module enable nodejs:20 -y &>>LOG_FILE
+dnf module enable nodejs:20 -y &>>$LOG_FILE
 VALIDATE $? "Enabling the nodejs"
 
-dnf install nodejs -y &>>LOG_FILE
+dnf install nodejs -y &>>$LOG_FILE
 VALIDATE $? "Installing the nodejs"
 
-id roboshop &>>LOG_FILE
+id roboshop &>>$LOG_FILE
 if [ $? -ne 0 ]; then
-    useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop &>>LOG_FILE
+    useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop &>>$LOG_FILE
     VALIDATE $? "Create the roboshop username"
 else
     echo -e "User already exist..$Y SKIPPING $N"
@@ -49,7 +49,7 @@ fi
 mkdir -p /app 
 VALIDATE $? "Create a Directory"
 
-curl -L -o /tmp/user.zip https://roboshop-artifacts.s3.amazonaws.com/user-v3.zip &>>LOG_FILE
+curl -L -o /tmp/user.zip https://roboshop-artifacts.s3.amazonaws.com/user-v3.zip &>>$LOG_FILE
 VALIDATE $? "Download the user application"
 
 cd /app 
@@ -58,21 +58,21 @@ VALIDATE $? "Change the directory"
 rm -rf /app/*
 VALIDATE $? "Removing the existing code"
 
-unzip /tmp/user.zip &>>LOG_FILE
+unzip /tmp/user.zip &>>$LOG_FILE
 VALIDATE $? "Unzip the code"
 
-npm install &>>LOG_FILE
+npm install &>>$LOG_FILE
 VALIDATE $? "Installing the dependencies"
 
-cp $SCRIPT_DIR/user.service /etc/systemd/system/user.service &>>LOG_FILE
+cp $SCRIPT_DIR/user.service /etc/systemd/system/user.service &>>$LOG_FILE
 VALIDATE $? "Copy the service file"
 
-systemctl daemon-reload &>>LOG_FILE
+systemctl daemon-reload &>>$LOG_FILE
 VALIDATE $? "Reload the daemon"
 
-systemctl enable user &>>LOG_FILE
+systemctl enable user &>>$LOG_FILE
 VALIDATE $? "Enabling the User"
 
-systemctl start user &>>LOG_FILE
-VALIDATE $? "Start the User"
+systemctl restart user &>>$LOG_FILE
+VALIDATE $? "ReStart the User"
 

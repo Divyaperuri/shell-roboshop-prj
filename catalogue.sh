@@ -78,9 +78,9 @@ VALIDATE $? "Copy mongo repo"
 dnf install mongodb-mongosh -y &>>$LOG_FILE
 VALIDATE $? "Install MongoDB client"
 
-INDEX=$(mongosh $MONGODB_HOST --quiet --eval 'db.getMongo().getDBNames().indexOf("catalogue")') &>>$LOG_FILE
+INDEX=$(mongosh $MONGODB_HOST --quiet --eval 'db.getMongo().getDBNames().indexOf("catalogue")') 
 if [ $INDEX -le 0 ]; then
-    mongosh --host $MONGODB_HOST </app/db/master-data.js 
+    mongosh --host $MONGODB_HOST </app/db/master-data.js &>>$LOG_FILE
     VALIDATE $? "Load catalogue products"
 else
     echo -e "catalogue products already loaded ... $Y SKIPPING $N"

@@ -56,6 +56,8 @@ unzip /tmp/shipping.zip &>>LOG_FILE
 VALIDATE $? "Unzip the code"
 
 cd /app
+VALIDATE $? "Changing the Directory"
+
 mvn clean package &>>LOG_FILE
 VALIDATE $? "Clean the package"
 
